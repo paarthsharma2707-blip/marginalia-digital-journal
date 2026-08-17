@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Marginalia — a digital journal</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%2312141d' stroke='%23e3a857' stroke-width='4'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='58' fill='%23e3a857' text-anchor='middle'%3E%C2%A7%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ============ AUTH SCREEN ============ -->
+  <main id="auth-screen" class="auth-screen">
+
+    <!-- Hero panel: the one bold moment on this screen -->
+    <section class="auth-hero" aria-hidden="true">
+      <div class="hero-glow hero-glow-amber"></div>
+      <div class="hero-glow hero-glow-teal"></div>
+      <div id="hero-constellation" class="hero-constellation"></div>
+
+      <div class="hero-content">
+        <span class="hero-eyebrow">Est. today — your archive of days</span>
+        <h2 class="hero-headline">Every day<br />leaves a mark.</h2>
+        <p class="hero-sub">Marginalia turns scattered thoughts into a streak you can see —
+          one lit dot for every page you fill.</p>
+
+        <div class="hero-quill">
+          <svg viewBox="0 0 220 90" class="quill-svg">
+            <path id="quill-ink-line" class="quill-line" d="M6,70 C 40,20 80,85 120,40 S 190,10 214,34" />
+            <circle id="quill-tip" class="quill-tip" r="4" />
+          </svg>
+        </div>
+
+        <ul class="hero-stats">
+          <li><strong>7</strong><span>moods tracked</span></li>
+          <li><strong>∞</strong><span>entries kept</span></li>
+          <li><strong>1</strong><span>streak, growing</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="auth-card-wrap">
+    <div class="auth-card">
+      <div class="brand">
+        <span class="brand-mark">§</span>
+        <div>
+          <h1>Marginalia</h1>
+          <p class="brand-tag">a quiet place to keep your days</p>
+        </div>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab is-active" data-tab="login" role="tab">Sign in</button>
+        <button class="auth-tab" data-tab="register" role="tab">Create account</button>
+      </div>
+
+      <form id="login-form" class="auth-form">
+        <label>Email
+          <input type="email" name="email" autocomplete="email" required />
+        </label>
+        <label>Password
+          <input type="password" name="password" autocomplete="current-password" required />
+        </label>
+        <button type="submit" class="btn btn-primary">Sign in</button>
+        <p class="form-error" data-for="login"></p>
+      </form>
+
+      <form id="register-form" class="auth-form is-hidden">
+        <label>Name
+          <input type="text" name="name" autocomplete="name" required />
+        </label>
+        <label>Email
+          <input type="email" name="email" autocomplete="email" required />
+        </label>
+        <label>Password
+          <input type="password" name="password" autocomplete="new-password" minlength="8" required />
+          <span class="hint">At least 8 characters</span>
+        </label>
+        <button type="submit" class="btn btn-primary">Create account</button>
+        <p class="form-error" data-for="register"></p>
+      </form>
+    </div>
+    </section>
+  </main>
+
+  <!-- ============ APP SHELL ============ -->
+  <div id="app-screen" class="app-screen is-hidden">
+
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand brand-sm">
+          <span class="brand-mark">§</span>
+          <h1>Marginalia</h1>
+        </div>
+        <button id="logout-btn" class="icon-btn" title="Sign out">⏻</button>
+      </div>
+
+      <button id="new-entry-btn" class="btn btn-accent btn-block">+ New entry</button>
+
+      <div class="search-box">
+        <input id="search-input" type="search" placeholder="Search entries…" />
+      </div>
+
+      <div class="filter-row">
+        <select id="mood-filter">
+          <option value="">All moods</option>
+          <option value="joyful">🌞 Joyful</option>
+          <option value="calm">🌿 Calm</option>
+          <option value="neutral">🌙 Neutral</option>
+          <option value="excited">✨ Excited</option>
+          <option value="anxious">🌊 Anxious</option>
+          <option value="sad">🌧️ Sad</option>
+          <option value="angry">🔥 Angry</option>
+        </select>
+        <button id="favorite-filter" class="icon-btn" title="Show favorites only">☆</button>
+      </div>
+
+      <div id="tag-chips" class="tag-chips"></div>
+
+      <nav id="entry-list" class="entry-list" aria-label="Journal entries"></nav>
+    </aside>
+
+    <section class="main-pane">
+      <header class="topbar">
+        <div class="streak-widget">
+          <div class="streak-count">
+            <span id="streak-number">0</span>
+            <span class="streak-label">day streak</span>
+          </div>
+          <div id="ink-calendar" class="ink-calendar" title="Entries this month"></div>
+        </div>
+        <div id="user-chip" class="user-chip"></div>
+      </header>
+
+      <!-- Empty state -->
+      <div id="empty-state" class="empty-state">
+        <p class="empty-mark">✎</p>
+        <h2>Nothing selected yet</h2>
+        <p>Pick an entry from the margin, or start a fresh page.</p>
+      </div>
+
+      <!-- Entry editor / viewer -->
+      <article id="entry-view" class="entry-view is-hidden">
+        <div class="entry-view-toolbar">
+          <button id="edit-toggle-btn" class="btn btn-ghost">Edit</button>
+          <button id="favorite-toggle-btn" class="icon-btn" title="Toggle favorite">☆</button>
+          <button id="delete-entry-btn" class="btn btn-ghost btn-danger">Delete</button>
+          <span id="save-status" class="save-status"></span>
+        </div>
+
+        <div class="page">
+          <input id="entry-title" class="entry-title" placeholder="Untitled entry" />
+
+          <div class="entry-meta">
+            <select id="entry-mood">
+              <option value="joyful">🌞 Joyful</option>
+              <option value="calm">🌿 Calm</option>
+              <option value="neutral" selected>🌙 Neutral</option>
+              <option value="excited">✨ Excited</option>
+              <option value="anxious">🌊 Anxious</option>
+              <option value="sad">🌧️ Sad</option>
+              <option value="angry">🔥 Angry</option>
+            </select>
+            <input id="entry-tags" type="text" placeholder="tags, comma, separated" />
+            <span id="entry-date" class="entry-date"></span>
+          </div>
+
+          <textarea id="entry-content" class="entry-content" placeholder="Start writing…"></textarea>
+        </div>
+      </article>
+    </section>
+
+    <!-- Mood constellation / stats panel -->
+    <aside class="stats-pane">
+      <h2>This month</h2>
+      <div id="mood-breakdown" class="mood-breakdown"></div>
+      <h2>Tags</h2>
+      <div id="stats-tags" class="tag-chips tag-chips-vertical"></div>
+    </aside>
+  </div>
+
+  <div id="toast" class="toast is-hidden"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
